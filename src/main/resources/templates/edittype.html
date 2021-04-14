@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑内容分类</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>body{margin: 30px}li{margin-bottom: 5px}a img{width:10%;height:10%}</style>
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="text-center">
+        <h5>编辑内容分类</h5>
+    </div>
+    <div class="row" th:if="${ok}">
+        <h5 class="alert alert-success" th:text="${ok}"></h5>
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <a th:href="@{/edittype}">添加新分类</a>
+            <nav>
+                <div th:replace="::tree(${parents},0)"></div>
+                <th:block th:fragment="tree(datas,level)">
+                    <ul th:class="${level==0?'list-unstyle':''}">
+                        <li th:each="a:${datas}">
+                            <a href="javascript:void(0);" class="getparent" th:pid="${a.tid}" th:pn="${a.name}" th:text="${a.name}"></a>
+<!--                            <button type="button" class="btn btn-primary btn-xs" th:href="@{|/edittype/${a.tid}|}">编辑</button>-->
+                            <a th:href="@{|/edittype/${a.tid}|}"><img th:src="@{/images/1.jpg}" alt="edit"></a>
+                            <a th:href="@{|/deletetype/${a.tid}|}" class="deletebtn"><img th:src="@{/images/2.jpg}" alt="delete"></a>
+                            <th:block th:if="${a.sublists}" th:replace="::tree(${a.sublists},1)"></th:block>
+                        </li>
+                    </ul>
+                </th:block>
+            </nav>
+        </div>
+        <div class="col-lg-10">
+            <form class="form-horizontal" th:action="@{/savetype}" th:object="${contentType}" method="post">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                    <p th:each="err:${#fields.errors('*')}" th:text="${err}+'&nbsp;'"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">分类名称</label>
+                    <input type="hidden" th:field="*{tid}">
+                    <input class="form-control" type="text" min="6" max="25" th:field="*{name}" required placeholder="请输入内容分类名称">
+
+                </div>
+                <div class="form-group">
+                    <label for="weight">权重</label>
+                    <input class="form-control" type="number" th:field="*{weight}" required placeholder="请输入权重值，用以排序">
+                </div>
+                <div class="form-group">
+                    <label for="parentid">上一级</label>
+                    <input type="hidden" id="parentid" th:field="*{parent.tid}">
+                    <input type="text" readonly id="parentname" th:field="*{parent.name}" class="form-control">
+
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(".getparent").click(function () {
+        var pid = $(this).attr("pid");
+        var pn = $(this).attr("pn");
+        $("#parentid").val(pid);
+        $("#parentname").val(pn);
+    });
+    $(".deletebtn").click(function () {
+        return confirm("确定删除吗？");
+    });
+</script>
+</body>
+</html>

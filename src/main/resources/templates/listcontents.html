@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>内容管理</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>body{margin: 30px}</style>
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/vue.min.js}"></script>
+    <script th:src="@{/js/site.js}"></script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div>
+        <h5>内容管理</h5>
+    </div>
+    <div class="row" th:unless="${#strings.isEmpty(ok)}">
+        <p class="alert alert-success" th:text="${ok}"></p>
+    </div>
+    <div class="row">
+        <form class="form-inline" th:action="@{/listcontents}" id="form1" th:object="${search}" method="post">
+            <div class="form-group">
+                <label>关键词</label>
+                <input type="text" placeholder="请输入关键词进行搜索" th:field="*{keyword}">
+            </div>
+            <div class="form-group">
+                <label for="sdate">开始日期</label>
+                <input type="date" th:field="*{sdate}">
+            </div>
+            <div class="form-group">
+                <label for="edate">结束日期</label>
+                <input type="date" th:field="*{edate}">
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="搜索">
+                <a th:href="@{/editcontent}" class="btn btn-primary" th:text="添加内容"></a>
+                <input type="hidden" name="cids" value="" id="deleteuids">
+                <button type="button" class="btn btn-danger delbtns">删除</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>标题</th>
+                <th>发布者</th>
+                <th>发布日期</th>
+                <th>编辑/删除</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c:${pages.content}">
+                <td >
+                    <input type="checkbox" th:value="${c.cid}" class="cuid">
+                    <span th:text="${cStat.count}"></span>
+                </td>
+                <td th:text="${c.title}"></td>
+                <td th:text="${c.user==null?'':c.user.account}"></td>
+                <td th:text="${c.cdate}"></td>
+                <td>
+                    <a th:href="@{|/editcontent/${c.cid}|}">编辑</a>
+                    <a th:href="@{|/deletecontent/${c.cid}|}" class="delbtn">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" th:fragment="pager">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item" th:each="p : ${#numbers.sequence(1, pages.totalPages)}">
+                    <a href="javascript:void(0);" th:page="${p-1}" class="page-link pagelink" th:text="${p}"></a>
+                </li>
+            </ul>
+
+        </nav>
+        <script>
+            $(".pagelink").click(function () {
+                var f=$("#form1");
+                var p=$("<input type='hidden' name='page'>");
+                var s=$("<input type='hidden' name='size' value='1'>");
+                $(p).val($(this).attr("page"));
+                $(s).appendTo(f);
+                $(p).appendTo(f);
+                $(f).submit();
+                return false;
+            })
+        </script>
+    </div>
+</div>
+
+</body>
+</html>

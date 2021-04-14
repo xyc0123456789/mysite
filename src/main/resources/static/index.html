@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>公司网站</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jQuery-3.6.0.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/vue.min.js"></script>
+
+
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="col"></div>
+        <div id="vueroot" class="container col-13">
+            <header class="row">
+                <!--菜单-->
+                <nav-menu id="mainmenu" :menus="menus"></nav-menu>
+                <!--logo-->
+                <img :src="sites.logo.svalue" alt="" style="width:1170px;height:100px">
+            </header>
+            <div class="row mt-lg-1">
+                <site-slide id="siteslide" imgh="215px" imgw="1170px" :slides="slides"></site-slide>
+            </div>
+            <div class="row" style="height: 1500px">
+                <div class="col col-lg-3">
+                    <div class="row">
+                        <!--滚动-->
+                        <scroll id="leftscroll" :pstyle="pstyle" title="COMING EVENT" :contents="contents"></scroll>
+                    </div>
+
+                    <div class="row">
+                        <!--谷歌搜索-->
+                        <form action="https://www.baidu.com/s">
+                            <input type="text" name="wd">
+                            <input type="submit" value="百度" class="btn btn-primary btn-sm">
+                        </form>
+                    </div>
+
+                    <div class="row">
+                        <!--公告-->
+                        <h5 v-text="gg.title">ANNOUNCEMENT</h5>
+                        <p v-html="gg.contents"></p>
+                    </div>
+                </div>
+                <div class="col col-lg-3" v-for="hc in homecon">
+                    <div class="row">
+                        <img :src="hc.timg" width="193px" height="85px" alt="">
+                    </div>
+                    <div class="row">
+                        <p>{{hc.title}}</p>
+                    </div>
+                    <div class="row">
+                        <div v-html="hc.contents"></div>
+                    </div>
+                </div>
+<!--                <div class="col col-lg-3">-->
+<!--                    &lt;!&ndash;产品&ndash;&gt;-->
+<!--                </div>-->
+<!--                <div class="col col-lg-3">-->
+<!--                    &lt;!&ndash;解决方案&ndash;&gt;-->
+<!--                </div>-->
+<!--                <div class="col col-lg-3">-->
+<!--                    &lt;!&ndash;关于我们&ndash;&gt;-->
+<!--                </div>-->
+            </div>
+            <footer class="row">
+                <!--版权与备案信息-->
+                <div class="col">
+                    <p v-html="sites.copyright.svalue"></p>
+                </div>
+            </footer>
+        </div>
+        <div class="col"></div>
+    </div>
+
+    <script src="js/sites.js"></script>
+</body>
+</html>

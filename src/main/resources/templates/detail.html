@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>公司网站</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/vue.min.js}"></script>
+
+
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="col"></div>
+    <div id="vueroot" class="container col-13">
+        <header class="row">
+            <!--菜单-->
+            <nav-menu id="mainmenu" :menus="menus"></nav-menu>
+            <!--logo-->
+            <img :src="sites.logo.svalue" alt="" style="width:1170px;height:100px">
+        </header>
+
+        <div class="row" style="height: 1500px">
+            <div class="col col-lg-3">
+
+                <div class="row">
+                    <p>你现在在</p>
+                    <h5 th:text="${mname}"></h5>
+                </div>
+
+                <div class="row">
+                    <!--谷歌搜索-->
+                    <form action="https://www.baidu.com/s">
+                        <input type="text" name="wd">
+                        <input type="submit" value="百度" class="btn btn-primary btn-sm">
+                    </form>
+                </div>
+
+                <div class="row">
+                    <!--公告-->
+                    <h5 v-text="gg.title">ANNOUNCEMENT</h5>
+                    <p v-html="gg.contents"></p>
+                </div>
+            </div>
+            <div class="col col-9">
+                <div th:utext="${con.contents}"></div>
+            </div>
+            <!--                <div class="col col-lg-3">-->
+            <!--                    &lt;!&ndash;产品&ndash;&gt;-->
+            <!--                </div>-->
+            <!--                <div class="col col-lg-3">-->
+            <!--                    &lt;!&ndash;解决方案&ndash;&gt;-->
+            <!--                </div>-->
+            <!--                <div class="col col-lg-3">-->
+            <!--                    &lt;!&ndash;关于我们&ndash;&gt;-->
+            <!--                </div>-->
+        </div>
+        <footer class="row">
+            <!--版权与备案信息-->
+            <div class="col">
+                <p v-html="sites.copyright.svalue"></p>
+            </div>
+        </footer>
+    </div>
+    <div class="col"></div>
+</div>
+
+<script th:src="@{/js/sites.js}"></script>
+</body>
+</html>

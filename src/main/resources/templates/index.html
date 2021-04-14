@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>网站后台管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>body{margin: 30px}</style>
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <style>
+        #myframe{
+            width: 98%;
+            height: 800px;
+            border:1px #69f solid;
+            /*frameborder: 10px;*/
+            /*bordercolor:#19b2ff;*/
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <p class="col col-md-6">网站后台管理系统</p>
+            <p class="col-md-6">欢迎<span th:text="${#session.getAttribute('user').account}"></span>登录，退出</p>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <nav>
+                    <ul>
+                        <li><a th:href="@{/edituser}" target="myframe">用户添加</a></li>
+                        <li><a th:href="@{/listusers}" target="myframe">用户管理</a></li>
+                        <li><a th:href="@{/edittype}" target="myframe">内容分类管理</a></li>
+                        <li><a th:href="@{/editcontent}" target="myframe">内容添加</a></li>
+                        <li><a th:href="@{/listcontents}" target="myframe">内容管理</a></li>
+                        <li><a th:href="@{/editsite}" target="myframe">网站管理</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-10">
+                <iframe id="myframe" name="myframe">
+                </iframe>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

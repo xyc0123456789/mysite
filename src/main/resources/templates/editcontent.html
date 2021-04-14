@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加/编辑内容</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>body{margin: 30px}</style>
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/ue/ueditor.config.js}"></script>
+    <script th:src="@{/ue/ueditor.all.js}"></script>
+    <script th:src="@{/ue/lang/zh-cn/zh-cn.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="text-center">
+        <h5>编辑内容</h5>
+    </div>
+    <div th:if="${fail}" class="row">
+        <h5 class="alert alert-danger" th:text="${fail}"></h5>
+    </div>
+    <div th:if="${ok}" class="row">
+        <h5 class="alert alert-success" th:text="${ok}"></h5>
+    </div>
+    <form class="form-horizontal" th:action="@{/savecontent}" th:object="${content}" method="post">
+        <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+            <p th:each="err:${#fields.errors('*')}" th:text="${err}+'&nbsp;'"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="title">标题</label>
+            <input type="hidden" th:field="*{cid}">
+            <input class="form-control" th:field="*{title}" required placeholder="请输入内容标题">
+
+        </div>
+        <div class="form-group">
+            <label for="timg">标题图片</label>
+            <input type="text" th:field="*{timg}" placeholder="请输入标题图片路径">
+            <img th:src="*{timg}" id="imgshow" alt="">
+            <a href="javascript:void(0);" class="btn btn-primary" id="upimage">浏览...</a>
+        </div>
+        <div class="form-group">
+            <label for="topflag">内容标志</label>
+            <select th:field="*{topflag}" class="form-control">
+                <option th:each="a:${flags}" th:value="${a}" th:text="${a}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="contenttype">分类</label>
+            <select th:field="*{type.tid}" class="form-control">
+                <option th:replace="::tree(${types},0)"></option>
+            </select>
+            <th:block th:fragment="tree(datas,level)">
+                <th:block th:each="d:${datas}">
+                    <option th:text="${@utils.numstr('-',level)+d.name}" th:value="${d.tid}"></option>
+                    <th:block th:if="${d.sublists}" th:replace="this::tree(${d.sublists},${level+1})"></th:block>
+                </th:block>
+
+            </th:block>
+        </div>
+        <div class="form-group">
+            <label for="weight">权重</label>
+            <input type="number" th:field="*{weight}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="contents">内容</label>
+            <textarea id="contents" th:field="*{contents}"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </form>
+    <script id="imgup" type="text/plain"></script>
+    <script>
+        var editor1 = UE.getEditor("contents",{});
+        var editor = UE.getEditor("imgup",{isShow: false});
+        editor.addListener("beforeExecCommand",function (a,b,c) {
+            console.log("a:"+a);
+            console.log("b:"+b);
+            console.log("c:"+c);
+            if (b =="insertimage"){
+                $("#"+editor.mydlg).val(c[1][0].src);
+                $("#imgshow").attr("src",c[1][0].src);
+                editor.mydlg="";
+            }
+        })
+        $("#upimage").click(function () {
+            var dlg = editor.getDialog("insertimage");
+            editor.mydlg="timg";
+            dlg.open();
+        })
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>网站相关信息配置</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>body{margin: 30px}</style>
+    <script th:src="@{/js/jQuery-3.6.0.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/ue/ueditor.config.js}"></script>
+    <script th:src="@{/ue/ueditor.all.js}"></script>
+    <script th:src="@{/ue/lang/zh-cn/zh-cn.js}"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="text-center">
+        <h5>网站配置管理</h5>
+    </div>
+    <form class="form-horizontal" th:action="@{/savesite}" method="post" th:each="s:${sites}">
+        <div class="col col-lg-12">
+            <div class="form-group">
+                <input type="hidden" id="sid" name="sid" th:value="${s.sid}">
+                <input type="hidden" id="skey" name="skey" th:value="${s.skey}">
+                <input type="hidden" id="stype" name="stype" th:value="${s.stype}">
+                <HR>
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">title:</label>
+                    <div class="col-sm-10">
+                        <input type="text" readonly class="col-lg-9 form-control" id="title" name="title" th:value="${s.title}">
+                    </div>
+                </div>
+
+
+                <div th:if="${#strings.toLowerCase(s.stype)=='text'}" style="margin-top: 10px">
+                    <input type="text" class="form-control" id="svalue" name="svalue" th:value="${s.svalue}">
+                </div>
+                <div th:if="${#strings.toLowerCase(s.stype)=='html'}" style="margin-top: 10px">
+                    <textarea th:id="'svalue_'+${s.sid}" name="svalue" th:value="${s.svalue}"></textarea>
+                    <script th:inline="javascript">
+                        var sid=/*[[${'svalue_'+s.sid}]]*/null;
+                        var ue =UE.getEditor(sid);
+                    </script>
+                </div>
+                <div th:if="${#strings.toLowerCase(s.stype)=='bigtext'}" style="margin-top: 10px">
+                    <textarea id="'svalue_'+${s.sid}" name="svalue" th:value="${s.svalue}"></textarea>
+                    <script th:inline="javascript">
+                        var sid=/*[[${'svalue_'+s.sid}]]*/null;
+                        var ue =UE.getEditor(sid);
+                    </script>
+                </div>
+                <div th:if="${#strings.toLowerCase(s.stype)=='image'}" style="margin-top: 10px;height: 350px">
+                    <input type="hidden" th:id="'svalue_'+${s.sid}" name="svalue" th:value="${s.svalue}">
+                    <img th:id="'svalue_show_'+${s.sid}" th:src="${s.svalue}" alt="" style="height: 300px" class="row">
+                    <div class="row">
+                        <a href="javascript:void(0);" class="btn btn-primary" th:id="'upimage_'+${s.sid}">浏览...</a>
+                    </div>
+                    <script type="text/plain" th:id="'svalue_editor_'+${s.sid}"></script>
+                    <script th:inline="javascript">
+                        var sid=/*[[${'svalue_editor_'+s.sid}]]*/null;
+                        var ssid=/*[[${'svalue_'+s.sid}]]*/null;
+                        var isid=/*[[${'svalue_show_'+s.sid}]]*/null;
+                        var upsid=/*[[${'upimage_'+s.sid}]]*/null;
+                        var ue = UE.getEditor(sid, {isShow:false});
+                        ue.sid=sid;ue.ssid=ssid;ue.isid=isid;
+                        ue.addListener("beforeExecCommand",function (a,b,c) {
+                            if (b =="insertimage"){
+                                // console.log(c[1][0].src);
+                                // console.log(this.isid);
+                                $("#"+this.ssid).val(c[1][0].src);
+                                $("#"+this.isid).attr("src",c[1][0].src);
+                            }
+                        });
+                        $("#"+upsid).data("ue",ue);
+                        $("#"+upsid).click(function () {
+                            var dlg = $(this).data("ue").getDialog("insertimage");
+                            dlg.open();
+                        })
+                    </script>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
